@@ -1,0 +1,23 @@
+Génère un script SQL d’insertion de données d’exemple pour une base de données MySQL nommée ArtConnect.
+
+Contexte :
+- La base contient les tables suivantes : Artist, Artwork, Exhibition, Gallery, Review, CommunityMember, Workshop, Discipline, ArtworkTag
+- Il existe aussi les tables d’association : Artist_Artwork, Artist_Discipline, Artwork_ArtworkTag, Artwork_Exhibition, Booking
+- Je veux des données cohérentes entre elles, réalistes et exploitables pour des démonstrations SQL
+
+Contraintes :
+- plusieurs artistes
+- plusieurs oeuvres
+- plusieurs expositions
+- plusieurs membres
+- plusieurs ateliers
+- au moins une oeuvre realisee par plusieurs artistes
+- au moins une oeuvre presente dans plusieurs expositions
+- plusieurs avis donnes par des membres sur des oeuvres
+- plusieurs reservations d’ateliers avec differents statuts de paiement
+- respecter les cles etrangeres et l’ordre des insertions
+
+Format attendu :
+- uniquement du SQL
+- script compatible MySQL
+- valeurs plausibles et cohérentes

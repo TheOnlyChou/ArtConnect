@@ -18,8 +18,8 @@ com/project/artconnect/model/Review.class
 com/project/artconnect/service/WorkshopService.class
 com/project/artconnect/ui/ArtistController.class
 com/project/artconnect/model/ArtworkTag.class
-com/project/artconnect/util/ServiceProvider.class
 com/project/artconnect/model/Artwork$Status.class
+com/project/artconnect/util/ServiceProvider.class
 com/project/artconnect/service/impl/InMemoryWorkshopService.class
 com/project/artconnect/config/DatabaseConfig.class
 com/project/artconnect/service/CommunityService.class

@@ -23,24 +23,13 @@ INSERT INTO Artist_Discipline VALUES
 (4, 'Photography');
 
 INSERT INTO Artwork VALUES
-(1, 'Fragments de Ville', 2023, 'Painting', 'Acrylic on canvas', '120x90 cm', 1800.00, 'available', 'Une serie inspiree des traces laissees par les passants dans la ville.'),
-(2, 'Murmures Recycles', 2024, 'Sculpture', 'Metal and recycled plastic', '80x60x50 cm', 2500.00, 'displayed', 'Sculpture realisee a partir de materiaux industriels reemployes.'),
-(3, 'Lignes d Horizon', 2022, 'Photography', 'Fine art print', '70x100 cm', 950.00, 'sold', 'Photographie grand format sur la transformation du paysage urbain.'),
-(4, 'Pulse 404', 2025, 'Installation', 'Screens, sensors, code', '300x200 cm', 4200.00, 'displayed', 'Installation interactive sur la surcharge numerique et l attention humaine.'),
-(5, 'Silence Bleu', 2021, 'Painting', 'Oil on canvas', '100x80 cm', 1600.00, 'reserved', 'Composition minimaliste autour du silence et de la profondeur.'),
-(6, 'Transit Humain', 2024, 'Digital Collage', 'Archival print', '60x80 cm', 1200.00, 'available', 'Collage numerique sur les flux de circulation et les gestes repetitifs.'),
-(7, 'Racines Numeriques', 2025, 'Mixed Media', 'Wood, LED, code', '150x150 cm', 3900.00, 'displayed', 'Oeuvre hybride questionnant les rapports entre nature et interfaces.');
-
-INSERT INTO Artist_Artwork VALUES
-(1, 1),
-(2, 2),
-(4, 3),
-(2, 4),
-(3, 4),
-(1, 5),
-(3, 6),
-(1, 7),
-(3, 7);
+(1, 'Fragments de Ville', 2023, 'Painting', 'Acrylic on canvas', '120x90 cm', 1800.00, 'FOR_SALE', 'Une serie inspiree des traces laissees par les passants dans la ville.', 1),
+(2, 'Murmures Recycles', 2024, 'Sculpture', 'Metal and recycled plastic', '80x60x50 cm', 2500.00, 'EXHIBITED', 'Sculpture realisee a partir de materiaux industriels reemployes.', 2),
+(3, 'Lignes d Horizon', 2022, 'Photography', 'Fine art print', '70x100 cm', 950.00, 'SOLD', 'Photographie grand format sur la transformation du paysage urbain.', 4),
+(4, 'Pulse 404', 2025, 'Installation', 'Screens, sensors, code', '300x200 cm', 4200.00, 'EXHIBITED', 'Installation interactive sur la surcharge numerique et l attention humaine.', 3),
+(5, 'Silence Bleu', 2021, 'Painting', 'Oil on canvas', '100x80 cm', 1600.00, 'FOR_SALE', 'Composition minimaliste autour du silence et de la profondeur.', 1),
+(6, 'Transit Humain', 2024, 'Digital Collage', 'Archival print', '60x80 cm', 1200.00, 'FOR_SALE', 'Collage numerique sur les flux de circulation et les gestes repetitifs.', 3),
+(7, 'Racines Numeriques', 2025, 'Mixed Media', 'Wood, LED, code', '150x150 cm', 3900.00, 'EXHIBITED', 'Oeuvre hybride questionnant les rapports entre nature et interfaces.', 3);
 
 INSERT INTO ArtworkTag VALUES
 ('urban'),
@@ -94,6 +83,15 @@ INSERT INTO CommunityMember VALUES
 (4, 'Mehdi Ait Ali', 'mehdi.aitali@mail.com', 1997, '0677004400', 'Lille', 'artist_supporter'),
 (5, 'Clara Rossi', 'clara.rossi@mail.com', 2002, '0677005500', 'Bordeaux', 'student');
 
+INSERT INTO CommunityMember_Discipline VALUES
+(1, 'Painting'),
+(1, 'Mixed Media'),
+(2, 'Photography'),
+(3, 'Digital Art'),
+(3, 'Photography'),
+(4, 'Sculpture'),
+(5, 'Painting');
+
 INSERT INTO Review VALUES
 (1, 5, 'Une oeuvre tres forte, le message ecologique est clair sans etre simpliste.', '2026-05-20', 2, 1),
 (2, 4, 'Installation impressionnante, tres immersive.', '2026-06-20', 4, 2),
@@ -110,12 +108,12 @@ INSERT INTO Workshop VALUES
 (4, 'Sculpture a partir de materiaux recycles', '2026-06-28 15:00:00', 150, 10, 40.00, 'Paris - Fabrique 12', 'Atelier de creation avec metal, plastique et objets recuperes.', 'beginner', 2);
 
 INSERT INTO Booking VALUES
-(1, 1, 'paid', '2026-06-01'),
-(1, 3, 'paid', '2026-06-03'),
-(1, 5, 'pending', '2026-06-04'),
-(2, 2, 'paid', '2026-06-10'),
-(2, 4, 'cancelled', '2026-06-11'),
-(3, 2, 'paid', '2026-06-20'),
-(3, 3, 'paid', '2026-06-21'),
-(4, 1, 'paid', '2026-06-06'),
-(4, 4, 'pending', '2026-06-07');
+(1, 1, 'paid', '2026-06-01 09:30:00'),
+(1, 3, 'paid', '2026-06-03 11:10:00'),
+(1, 5, 'pending', '2026-06-04 16:45:00'),
+(2, 2, 'paid', '2026-06-10 14:00:00'),
+(2, 4, 'cancelled', '2026-06-11 08:50:00'),
+(3, 2, 'paid', '2026-06-20 19:20:00'),
+(3, 3, 'paid', '2026-06-21 10:15:00'),
+(4, 1, 'paid', '2026-06-06 12:30:00'),
+(4, 4, 'pending', '2026-06-07 17:40:00');

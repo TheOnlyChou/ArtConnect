@@ -11,21 +11,11 @@ SELECT
     aw.dimensions_artwork,
     aw.price_artwork,
     aw.status_artwork,
-    GROUP_CONCAT(DISTINCT ar.name_artist ORDER BY ar.name_artist SEPARATOR ', ') AS artists
+    ar.name_artist AS artist
 FROM Artwork aw
-LEFT JOIN Artist_Artwork aa ON aw.id_artwork = aa.id_artwork
-LEFT JOIN Artist ar ON aa.id_artist = ar.id_artist
-GROUP BY
-    aw.id_artwork,
-    aw.title_artwork,
-    aw.creationYear_artwork,
-    aw.type_artwork,
-    aw.medium_artwork,
-    aw.dimensions_artwork,
-    aw.price_artwork,
-    aw.status_artwork;
+JOIN Artist ar ON aw.id_artist = ar.id_artist;
 
--- simplify workshop (booked_places, reserved and available)
+-- simplify workshop occupancy (booked and remaining places)
 CREATE OR REPLACE VIEW v_workshop_occupancy AS
 SELECT
     w.id_workshop,
@@ -44,12 +34,13 @@ GROUP BY
     w.date_workshop,
     w.maxParticipants_workshop;
     
--- simplify review consultation, title, name email of the member
+-- simplify review consultation, title, name and email of the member
 CREATE OR REPLACE VIEW v_artwork_reviews AS
 SELECT
     r.id_review,
     aw.title_artwork,
     cm.name_communityMember,
+    cm.email_communityMember,
     r.rating_review,
     r.comment_review,
     r.reviewDate_review
@@ -92,5 +83,25 @@ ON Artwork(status_artwork);
 Example : 
 SELECT *
 FROM Artwork
-WHERE status_artwork = 'available';
+WHERE status_artwork = 'FOR_SALE';
+*/
+
+CREATE INDEX idx_artwork_artist
+ON Artwork(id_artist);
+/*
+Example :
+SELECT *
+FROM Artwork
+WHERE id_artist = 3;
+*/
+
+CREATE INDEX idx_member_discipline
+ON CommunityMember_Discipline(name_discipline, id_communityMember);
+/*
+Example :
+SELECT cm.*
+FROM CommunityMember cm
+JOIN CommunityMember_Discipline cmd
+    ON cm.id_communityMember = cmd.id_communityMember
+WHERE cmd.name_discipline = 'Photography';
 */

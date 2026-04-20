@@ -31,8 +31,13 @@ CREATE TABLE Artwork (
     medium_artwork VARCHAR(120),
     dimensions_artwork VARCHAR(80),
     price_artwork DECIMAL(10,2),
-    status_artwork ENUM('available', 'reserved', 'sold', 'displayed') NOT NULL DEFAULT 'available',
-    description_artwork TEXT
+    status_artwork ENUM('FOR_SALE', 'SOLD', 'EXHIBITED') NOT NULL DEFAULT 'FOR_SALE',
+    description_artwork TEXT,
+    id_artist INT NOT NULL,
+    CONSTRAINT fk_artwork_artist
+        FOREIGN KEY (id_artist) REFERENCES Artist(id_artist)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE ArtworkTag (
@@ -116,20 +121,6 @@ CREATE TABLE Review (
 
 -- TABLES D'ASSOCIATION
 
-CREATE TABLE Artist_Artwork (
-    id_artist INT NOT NULL,
-    id_artwork INT NOT NULL,
-    PRIMARY KEY (id_artist, id_artwork),
-    CONSTRAINT fk_artist_artwork_artist
-        FOREIGN KEY (id_artist) REFERENCES Artist(id_artist)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    CONSTRAINT fk_artist_artwork_artwork
-        FOREIGN KEY (id_artwork) REFERENCES Artwork(id_artwork)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
 CREATE TABLE Artist_Discipline (
     id_artist INT NOT NULL,
     name_discipline VARCHAR(100) NOT NULL,
@@ -139,6 +130,20 @@ CREATE TABLE Artist_Discipline (
         ON DELETE CASCADE
         ON UPDATE CASCADE,
     CONSTRAINT fk_artist_discipline_discipline
+        FOREIGN KEY (name_discipline) REFERENCES Discipline(name_discipline)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE CommunityMember_Discipline (
+    id_communityMember INT NOT NULL,
+    name_discipline VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id_communityMember, name_discipline),
+    CONSTRAINT fk_member_discipline_member
+        FOREIGN KEY (id_communityMember) REFERENCES CommunityMember(id_communityMember)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_member_discipline_discipline
         FOREIGN KEY (name_discipline) REFERENCES Discipline(name_discipline)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -176,7 +181,7 @@ CREATE TABLE Booking (
     id_workshop INT NOT NULL,
     id_communityMember INT NOT NULL,
     paymentStatus_booking ENUM('pending', 'paid', 'cancelled') NOT NULL DEFAULT 'pending',
-    bookingDate_booking DATE NOT NULL,
+    bookingDate_booking DATETIME NOT NULL,
     PRIMARY KEY (id_workshop, id_communityMember),
     CONSTRAINT fk_booking_workshop
         FOREIGN KEY (id_workshop) REFERENCES Workshop(id_workshop)

@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS Exhibition_Audit (
 DROP TRIGGER IF EXISTS trg_exhibition_check_dates_insert;
 DROP TRIGGER IF EXISTS trg_exhibition_check_dates_update;
 DROP TRIGGER IF EXISTS trg_booking_check_capacity;
+DROP TRIGGER IF EXISTS trg_booking_check_capacity_update;
 DROP TRIGGER IF EXISTS trg_exhibition_audit_update;
 
 DELIMITER //
@@ -61,6 +62,36 @@ BEGIN
     IF v_current_count >= v_max_places THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Erreur : atelier complet';
+    END IF;
+END//
+
+CREATE TRIGGER trg_booking_check_capacity_update
+BEFORE UPDATE ON Booking
+FOR EACH ROW
+BEGIN
+    DECLARE v_current_count INT;
+    DECLARE v_max_places INT;
+
+    IF NEW.id_workshop <> OLD.id_workshop
+       OR (OLD.paymentStatus_booking = 'cancelled' AND NEW.paymentStatus_booking IN ('paid', 'pending'))
+       OR (OLD.paymentStatus_booking NOT IN ('paid', 'pending') AND NEW.paymentStatus_booking IN ('paid', 'pending')) THEN
+
+        SELECT COUNT(*)
+        INTO v_current_count
+        FROM Booking
+        WHERE id_workshop = NEW.id_workshop
+          AND paymentStatus_booking IN ('paid', 'pending')
+          AND NOT (id_workshop = OLD.id_workshop AND id_communityMember = OLD.id_communityMember);
+
+        SELECT maxParticipants_workshop
+        INTO v_max_places
+        FROM Workshop
+        WHERE id_workshop = NEW.id_workshop;
+
+        IF NEW.paymentStatus_booking IN ('paid', 'pending') AND v_current_count >= v_max_places THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Erreur : atelier complet';
+        END IF;
     END IF;
 END//
 
@@ -147,7 +178,7 @@ CREATE PROCEDURE sp_book_workshop(
     IN p_id_workshop INT,
     IN p_id_communityMember INT,
     IN p_paymentStatus_booking VARCHAR(20),
-    IN p_bookingDate_booking DATE
+    IN p_bookingDate_booking DATETIME
 )
 BEGIN
     DECLARE v_workshop_count INT;
@@ -169,6 +200,16 @@ BEGIN
     IF v_member_count = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Erreur : membre inexistant';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM Booking
+        WHERE id_workshop = p_id_workshop
+          AND id_communityMember = p_id_communityMember
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Erreur : reservation deja existante pour ce membre et cet atelier';
     END IF;
 
     INSERT INTO Booking (
@@ -232,7 +273,7 @@ CALL sp_create_workshop(
     1
 );
 
-CALL sp_book_workshop(10, 1, 'paid', '2026-07-20');
+CALL sp_book_workshop(10, 1, 'paid', '2026-07-20 10:00:00');
 
 SELECT fn_workshop_participant_count(10);
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommunityMember {
+    private Long id;
     private String name;
     private String email;
     private Integer birthYear;
@@ -20,6 +21,14 @@ public class CommunityMember {
     public CommunityMember(String name, String email) {
         this.name = name;
         this.email = email;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

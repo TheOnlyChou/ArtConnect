@@ -9,6 +9,7 @@
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
     <Label text="Featured Exhibitions &amp; Content" style="-fx-font-size: 24; -fx-font-weight: bold;"/>
+    <Label fx:id="summaryLabel" text="Summary" style="-fx-font-size: 14;" />
     <ScrollPane VBox.vgrow="ALWAYS">
         <FlowPane fx:id="discoverPane" hgap="20" vgap="20" prefWrapLength="1100">
             <!-- Cards will be added programmatically -->

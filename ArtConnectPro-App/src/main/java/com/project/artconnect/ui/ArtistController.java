@@ -4,18 +4,23 @@ import com.project.artconnect.model.Artist;
 import com.project.artconnect.model.Discipline;
 import com.project.artconnect.service.ArtistService;
 import com.project.artconnect.util.ServiceProvider;
-import java.util.stream.Collectors;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ArtistController {
     @FXML
     private TextField searchField;
     @FXML
     private ComboBox<Discipline> disciplineFilter;
+    @FXML
+    private TextField cityFilter;
     @FXML
     private TextField nameInput;
     @FXML
@@ -24,6 +29,18 @@ public class ArtistController {
     private TextField emailInput;
     @FXML
     private TextField yearInput;
+    @FXML
+    private TextField phoneInput;
+    @FXML
+    private TextField websiteInput;
+    @FXML
+    private TextField socialInput;
+    @FXML
+    private TextArea bioInput;
+    @FXML
+    private CheckBox activeInput;
+    @FXML
+    private TextField disciplinesInput;
     @FXML
     private TableView<Artist> artistTable;
     @FXML
@@ -35,7 +52,15 @@ public class ArtistController {
     @FXML
     private TableColumn<Artist, Integer> yearColumn;
     @FXML
+    private TableColumn<Artist, String> phoneColumn;
+    @FXML
+    private TableColumn<Artist, String> websiteColumn;
+    @FXML
     private TableColumn<Artist, String> disciplinesColumn;
+    @FXML
+    private TableColumn<Artist, String> activeColumn;
+    @FXML
+    private TableColumn<Artist, String> bioPreviewColumn;
 
     private final ArtistService artistService = ServiceProvider.getArtistService();
 
@@ -45,10 +70,21 @@ public class ArtistController {
         cityColumn.setCellValueFactory(new PropertyValueFactory<>("city"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("contactEmail"));
         yearColumn.setCellValueFactory(new PropertyValueFactory<>("birthYear"));
-        if (disciplinesColumn != null) {
-            disciplinesColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
-                formatDisciplines(cellData.getValue())));
-        }
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        websiteColumn.setCellValueFactory(new PropertyValueFactory<>("website"));
+        disciplinesColumn.setCellValueFactory(cellData -> {
+            Artist a = cellData.getValue();
+            String joined = a.getDisciplines() == null || a.getDisciplines().isEmpty()
+                    ? ""
+                    : String.join(", ", a.getDisciplines().stream().map(d -> d.getName()).toList());
+            return new javafx.beans.property.ReadOnlyStringWrapper(joined);
+        });
+        activeColumn.setCellValueFactory(cellData -> {
+            boolean active = cellData.getValue() != null && cellData.getValue().isActive();
+            return new javafx.beans.property.ReadOnlyStringWrapper(active ? "Yes" : "No");
+        });
+        bioPreviewColumn.setCellValueFactory(cellData -> new javafx.beans.property.ReadOnlyStringWrapper(
+            preview(cellData.getValue() != null ? cellData.getValue().getBio() : null, 80)));
 
         disciplineFilter.setItems(FXCollections.observableArrayList(artistService.getAllDisciplines()));
         artistTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, selected) -> {
@@ -64,14 +100,15 @@ public class ArtistController {
         String query = searchField.getText();
         Discipline d = disciplineFilter.getValue();
         String dName = (d != null) ? d.getName() : null;
-        artistTable.setItems(FXCollections.observableArrayList(
-            artistService.searchArtists(query, dName, null)));
+        String city = cityFilter.getText() != null ? cityFilter.getText().trim() : null;
+        artistTable.setItems(FXCollections.observableArrayList(artistService.searchArtists(query, dName, city)));
     }
 
     @FXML
     private void handleReset() {
         searchField.clear();
         disciplineFilter.setValue(null);
+        cityFilter.clear();
         refreshTable();
     }
 
@@ -86,7 +123,7 @@ public class ArtistController {
             refreshTable();
             selectByName(artist.getName());
         } catch (RuntimeException e) {
-            showError("Failed to add artist.", e);
+            showError("Failed to create artist: " + e.getMessage());
         }
     }
 
@@ -95,6 +132,7 @@ public class ArtistController {
         Artist selected = artistTable.getSelectionModel().getSelectedItem();
         Artist artist = buildArtistFromForm();
         if (selected == null || artist == null) {
+            showInfo("Select an artist to update.");
             return;
         }
         if (!selected.getName().equals(artist.getName())) {
@@ -106,7 +144,7 @@ public class ArtistController {
             refreshTable();
             selectByName(artist.getName());
         } catch (RuntimeException e) {
-            showError("Failed to update artist.", e);
+            showError("Failed to update artist: " + e.getMessage());
         }
     }
 
@@ -123,7 +161,7 @@ public class ArtistController {
             refreshTable();
             handleClearForm();
         } catch (RuntimeException e) {
-            showError("Failed to delete artist.", e);
+            showError("Failed to delete artist: " + e.getMessage());
         }
     }
 
@@ -133,6 +171,12 @@ public class ArtistController {
         cityInput.clear();
         emailInput.clear();
         yearInput.clear();
+        phoneInput.clear();
+        websiteInput.clear();
+        socialInput.clear();
+        bioInput.clear();
+        disciplinesInput.clear();
+        activeInput.setSelected(true);
         artistTable.getSelectionModel().clearSelection();
     }
 
@@ -151,7 +195,17 @@ public class ArtistController {
         artist.setName(name);
         artist.setCity(cityInput.getText() != null ? cityInput.getText().trim() : null);
         artist.setContactEmail(emailInput.getText() != null ? emailInput.getText().trim() : null);
-        artist.setActive(true);
+        artist.setPhone(phoneInput.getText() != null ? phoneInput.getText().trim() : null);
+        artist.setWebsite(websiteInput.getText() != null ? websiteInput.getText().trim() : null);
+        artist.setSocialMedia(socialInput.getText() != null ? socialInput.getText().trim() : null);
+        artist.setBio(bioInput.getText() != null ? bioInput.getText().trim() : null);
+        artist.setActive(activeInput.isSelected());
+
+        List<Discipline> disciplines = parseDisciplines(disciplinesInput.getText());
+        if (disciplines == null) {
+            return null;
+        }
+        artist.setDisciplines(disciplines);
 
         String yearText = yearInput.getText() != null ? yearInput.getText().trim() : "";
         if (!yearText.isEmpty()) {
@@ -170,6 +224,63 @@ public class ArtistController {
         cityInput.setText(artist.getCity());
         emailInput.setText(artist.getContactEmail());
         yearInput.setText(artist.getBirthYear() != null ? String.valueOf(artist.getBirthYear()) : "");
+        phoneInput.setText(artist.getPhone());
+        websiteInput.setText(artist.getWebsite());
+        socialInput.setText(artist.getSocialMedia());
+        bioInput.setText(artist.getBio());
+        activeInput.setSelected(artist.isActive());
+        disciplinesInput.setText(artist.getDisciplines() == null
+                ? ""
+                : artist.getDisciplines().stream().map(Discipline::getName).collect(Collectors.joining(", ")));
+    }
+
+    private List<Discipline> parseDisciplines(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return List.of();
+        }
+
+        Map<String, Discipline> byLowerName = new LinkedHashMap<>();
+        for (Discipline discipline : artistService.getAllDisciplines()) {
+            if (discipline.getName() != null) {
+                byLowerName.put(discipline.getName().toLowerCase(), discipline);
+            }
+        }
+
+        List<String> unknown = new java.util.ArrayList<>();
+        List<Discipline> selected = Arrays.stream(raw.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(name -> {
+                    Discipline discipline = byLowerName.get(name.toLowerCase());
+                    if (discipline == null) {
+                        unknown.add(name);
+                    }
+                    return discipline;
+                })
+                .filter(d -> d != null)
+                .collect(Collectors.toMap(
+                        d -> d.getName().toLowerCase(),
+                        d -> d,
+                        (left, right) -> left,
+                        LinkedHashMap::new))
+                .values()
+                .stream()
+                .toList();
+
+        if (!unknown.isEmpty()) {
+            showInfo("Unknown disciplines: " + String.join(", ", unknown)
+                    + ". Use existing values from the discipline filter.");
+            return null;
+        }
+        return selected;
+    }
+
+    private String preview(String text, int maxLength) {
+        if (text == null || text.isBlank()) {
+            return "";
+        }
+        String trimmed = text.trim().replace('\n', ' ');
+        return trimmed.length() <= maxLength ? trimmed : trimmed.substring(0, maxLength - 1) + "...";
     }
 
     private void selectByName(String name) {
@@ -192,21 +303,11 @@ public class ArtistController {
         alert.showAndWait();
     }
 
-    private void showError(String message, Exception exception) {
+    private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Artists");
-        alert.setHeaderText(message);
-        alert.setContentText(exception.getMessage() != null ? exception.getMessage() : "An unexpected error occurred.");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    private String formatDisciplines(Artist artist) {
-        if (artist == null || artist.getDisciplines() == null || artist.getDisciplines().isEmpty()) {
-            return "";
-        }
-        return artist.getDisciplines().stream()
-                .map(Discipline::getName)
-                .filter(name -> name != null && !name.isBlank())
-                .collect(Collectors.joining(", "));
     }
 }

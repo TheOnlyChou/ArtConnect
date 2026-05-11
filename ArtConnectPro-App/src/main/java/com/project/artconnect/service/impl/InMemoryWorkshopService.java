@@ -47,6 +47,30 @@ public class InMemoryWorkshopService implements WorkshopService {
     }
 
     @Override
+    public void createWorkshop(Workshop workshop) {
+        if (workshop == null || workshop.getTitle() == null) {
+            return;
+        }
+        workshops.put(workshop.getTitle(), workshop);
+    }
+
+    @Override
+    public void updateWorkshop(Workshop workshop) {
+        if (workshop == null || workshop.getTitle() == null) {
+            return;
+        }
+        workshops.put(workshop.getTitle(), workshop);
+    }
+
+    @Override
+    public void deleteWorkshop(String title) {
+        if (title == null) {
+            return;
+        }
+        workshops.remove(title);
+    }
+
+    @Override
     public void bookWorkshop(Workshop workshop, CommunityMember member) {
         if (workshop == null || member == null)
             return;

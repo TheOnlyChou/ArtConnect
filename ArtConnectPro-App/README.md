@@ -12,7 +12,7 @@ This project is a skeleton designed for students to practice:
 - `com.project.artconnect.MainApp`: Entry point.
 - `com.project.artconnect.model`: Domain entities (POJOs/Stubs).
 - `com.project.artconnect.dao`: Data Access Object interfaces.
-- `com.project.artconnect.persistence`: JDBC implementations (TODO: Students implement these).
+- `com.project.artconnect.persistence`: JDBC implementations.
 - `com.project.artconnect.service`: Business logic layer.
 - `com.project.artconnect.ui`: JavaFX Controllers and FXML views.
 - `com.project.artconnect.util`: Utility classes like `ConnectionManager` and `ServiceProvider`.
@@ -24,7 +24,11 @@ Requirement: Java 17+ and Maven installed.
 mvn clean javafx:run
 ```
 
-The application runs "out-of-the-box" using **In-Memory Services** (`InMemoryArtistService`, etc.) located in `com.project.artconnect.service.impl`. This allows immediate demonstration of the UI with dummy data.
+The application runs using **JDBC/MySQL** services via `ServiceProvider`. If your database credentials differ from the defaults, set the environment variables used by `DatabaseConfig` before launching:
+
+- `ARTCONNECT_DB_URL`
+- `ARTCONNECT_DB_USER`
+- `ARTCONNECT_DB_PASSWORD`
 
 ## OOP-First Design (Object-Oriented Programming)
 Unlike typical database-centric skeletons, ArtConnect Pro follows strict OOP best practices:
@@ -40,6 +44,11 @@ Unlike typical database-centric skeletons, ArtConnect Pro follows strict OOP bes
 4. **JDBC Implementation**: Implement the `Jdbc` DAO classes in `com.project.artconnect.persistence`.
 5. **Service Swap**: Update `ServiceProvider` to use your new `Jdbc` DAOs.
 
+## Step 4 Scope (Current State)
+- **JDBC persistence is active** via `ServiceProvider`.
+- Artists and Artworks tabs support CRUD with persistence.
+- Other tabs are read-only views backed by JDBC services.
+
 ## Architecture Diagram
 ```mermaid
 graph TD
@@ -51,7 +60,7 @@ graph TD
 ```
 
 ## Testing Instructions
-1. Launch the app and verify all 7 tabs show dummy data.
-2. Search for an artist by name or filter by discipline in the Artists Tab.
-3. View the "Discover" tab to see featured content dynamically generated.
-4. Once you implement JDBC, swap the `ServiceProvider` to use your `JdbcArtistDao` and verify data is fetched from MySQL.
+1. Launch the app and verify all 7 tabs load data from MySQL.
+2. Search for an artist by name/city/email or filter by discipline in the Artists Tab.
+3. Create, update, and delete artists and artworks to confirm persistence.
+4. View the "Discover" tab to see featured content pulled from JDBC services.

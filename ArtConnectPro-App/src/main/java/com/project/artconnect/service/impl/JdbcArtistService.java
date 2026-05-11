@@ -94,8 +94,11 @@ public class JdbcArtistService implements ArtistService {
         String normalizedCity = city == null ? null : city.trim().toLowerCase();
 
         return source.stream()
-                .filter(a -> normalizedQuery == null || normalizedQuery.isEmpty()
-                        || (a.getName() != null && a.getName().toLowerCase().contains(normalizedQuery)))
+            .filter(a -> normalizedQuery == null || normalizedQuery.isEmpty()
+                || (a.getName() != null && a.getName().toLowerCase().contains(normalizedQuery))
+                || (a.getCity() != null && a.getCity().toLowerCase().contains(normalizedQuery))
+                || (a.getContactEmail() != null
+                    && a.getContactEmail().toLowerCase().contains(normalizedQuery)))
                 .filter(a -> normalizedCity == null || normalizedCity.isEmpty()
                         || (a.getCity() != null && a.getCity().toLowerCase().equals(normalizedCity)))
                 .filter(a -> normalizedDiscipline == null || normalizedDiscipline.isEmpty()

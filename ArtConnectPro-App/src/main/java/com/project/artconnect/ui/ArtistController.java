@@ -4,6 +4,8 @@ import com.project.artconnect.model.Artist;
 import com.project.artconnect.model.Discipline;
 import com.project.artconnect.service.ArtistService;
 import com.project.artconnect.util.ServiceProvider;
+import java.util.stream.Collectors;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -32,6 +34,8 @@ public class ArtistController {
     private TableColumn<Artist, String> emailColumn;
     @FXML
     private TableColumn<Artist, Integer> yearColumn;
+    @FXML
+    private TableColumn<Artist, String> disciplinesColumn;
 
     private final ArtistService artistService = ServiceProvider.getArtistService();
 
@@ -41,6 +45,10 @@ public class ArtistController {
         cityColumn.setCellValueFactory(new PropertyValueFactory<>("city"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("contactEmail"));
         yearColumn.setCellValueFactory(new PropertyValueFactory<>("birthYear"));
+        if (disciplinesColumn != null) {
+            disciplinesColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+                formatDisciplines(cellData.getValue())));
+        }
 
         disciplineFilter.setItems(FXCollections.observableArrayList(artistService.getAllDisciplines()));
         artistTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, selected) -> {
@@ -56,7 +64,8 @@ public class ArtistController {
         String query = searchField.getText();
         Discipline d = disciplineFilter.getValue();
         String dName = (d != null) ? d.getName() : null;
-        artistTable.setItems(FXCollections.observableArrayList(artistService.searchArtists(query, dName, null)));
+        artistTable.setItems(FXCollections.observableArrayList(
+            artistService.searchArtists(query, dName, null)));
     }
 
     @FXML
@@ -72,9 +81,13 @@ public class ArtistController {
         if (artist == null) {
             return;
         }
-        artistService.createArtist(artist);
-        refreshTable();
-        selectByName(artist.getName());
+        try {
+            artistService.createArtist(artist);
+            refreshTable();
+            selectByName(artist.getName());
+        } catch (RuntimeException e) {
+            showError("Failed to add artist.", e);
+        }
     }
 
     @FXML
@@ -88,9 +101,13 @@ public class ArtistController {
             showInfo("Update requires the same artist name as the selected row.");
             return;
         }
-        artistService.updateArtist(artist);
-        refreshTable();
-        selectByName(artist.getName());
+        try {
+            artistService.updateArtist(artist);
+            refreshTable();
+            selectByName(artist.getName());
+        } catch (RuntimeException e) {
+            showError("Failed to update artist.", e);
+        }
     }
 
     @FXML
@@ -101,9 +118,13 @@ public class ArtistController {
             showInfo("Select an artist or enter a name to delete.");
             return;
         }
-        artistService.deleteArtist(targetName.trim());
-        refreshTable();
-        handleClearForm();
+        try {
+            artistService.deleteArtist(targetName.trim());
+            refreshTable();
+            handleClearForm();
+        } catch (RuntimeException e) {
+            showError("Failed to delete artist.", e);
+        }
     }
 
     @FXML
@@ -169,5 +190,23 @@ public class ArtistController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void showError(String message, Exception exception) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Artists");
+        alert.setHeaderText(message);
+        alert.setContentText(exception.getMessage() != null ? exception.getMessage() : "An unexpected error occurred.");
+        alert.showAndWait();
+    }
+
+    private String formatDisciplines(Artist artist) {
+        if (artist == null || artist.getDisciplines() == null || artist.getDisciplines().isEmpty()) {
+            return "";
+        }
+        return artist.getDisciplines().stream()
+                .map(Discipline::getName)
+                .filter(name -> name != null && !name.isBlank())
+                .collect(Collectors.joining(", "));
     }
 }

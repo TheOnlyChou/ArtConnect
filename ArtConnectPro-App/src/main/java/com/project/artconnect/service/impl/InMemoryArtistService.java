@@ -81,11 +81,22 @@ public class InMemoryArtistService implements ArtistService {
 
     @Override
     public List<Artist> searchArtists(String query, String disciplineName, String city) {
+        String normalizedQuery = query == null ? null : query.trim().toLowerCase();
+        String normalizedCity = city == null ? null : city.trim().toLowerCase();
+        String normalizedDiscipline = disciplineName == null ? null : disciplineName.trim().toLowerCase();
+
         return artists.values().stream()
-                .filter(a -> query == null || a.getName().toLowerCase().contains(query.toLowerCase()))
-                .filter(a -> city == null || city.isEmpty() || a.getCity().equalsIgnoreCase(city))
-                .filter(a -> disciplineName == null
-                        || a.getDisciplines().stream().anyMatch(d -> d.getName().equals(disciplineName)))
-                .collect(Collectors.toList());
+            .filter(a -> normalizedQuery == null || normalizedQuery.isEmpty()
+                || (a.getName() != null && a.getName().toLowerCase().contains(normalizedQuery))
+                || (a.getCity() != null && a.getCity().toLowerCase().contains(normalizedQuery))
+                || (a.getContactEmail() != null
+                    && a.getContactEmail().toLowerCase().contains(normalizedQuery)))
+            .filter(a -> normalizedCity == null || normalizedCity.isEmpty()
+                || (a.getCity() != null && a.getCity().toLowerCase().equals(normalizedCity)))
+            .filter(a -> normalizedDiscipline == null || normalizedDiscipline.isEmpty()
+                || a.getDisciplines().stream()
+                    .anyMatch(d -> d.getName() != null
+                        && d.getName().toLowerCase().equals(normalizedDiscipline)))
+            .collect(Collectors.toList());
     }
 }

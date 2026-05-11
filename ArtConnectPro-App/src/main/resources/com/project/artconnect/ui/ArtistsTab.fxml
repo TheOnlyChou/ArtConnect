@@ -9,7 +9,7 @@
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
     <HBox spacing="10.0" alignment="CENTER_LEFT">
-        <TextField fx:id="searchField" promptText="Search artists..." HBox.hgrow="ALWAYS" />
+        <TextField fx:id="searchField" promptText="Search (name, city, email)..." HBox.hgrow="ALWAYS" />
         <ComboBox fx:id="disciplineFilter" promptText="Filter by Discipline" />
         <Button text="Search" onAction="#handleSearch" />
         <Button text="Reset" onAction="#handleReset" />
@@ -29,6 +29,7 @@
             <TableColumn fx:id="nameColumn" text="Name" prefWidth="200" />
             <TableColumn fx:id="cityColumn" text="City" prefWidth="150" />
             <TableColumn fx:id="emailColumn" text="Email" prefWidth="200" />
+            <TableColumn fx:id="disciplinesColumn" text="Disciplines" prefWidth="180" />
             <TableColumn fx:id="yearColumn" text="Birth Year" prefWidth="100" />
         </columns>
     </TableView>

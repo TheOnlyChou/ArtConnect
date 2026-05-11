@@ -8,11 +8,32 @@
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search members..." HBox.hgrow="ALWAYS" />
+        <ComboBox fx:id="membershipFilter" promptText="Membership" />
+        <Button text="Search" onAction="#handleSearch" />
+        <Button text="Reset" onAction="#handleReset" />
+    </HBox>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextField fx:id="nameInput" promptText="Name" prefWidth="180" />
+        <TextField fx:id="emailInput" promptText="Email" prefWidth="220" />
+        <TextField fx:id="cityInput" promptText="City" prefWidth="140" />
+        <TextField fx:id="phoneInput" promptText="Phone" prefWidth="140" />
+        <TextField fx:id="birthYearInput" promptText="Birth Year" prefWidth="110" />
+        <ComboBox fx:id="membershipInput" promptText="Membership" prefWidth="160" />
+        <Button text="Add" onAction="#handleAddMember" />
+        <Button text="Update" onAction="#handleUpdateMember" />
+        <Button text="Delete" onAction="#handleDeleteMember" />
+        <Button text="Clear" onAction="#handleClearForm" />
+    </HBox>
     <TableView fx:id="memberTable" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="nameColumn" text="Name" prefWidth="250" />
-            <TableColumn fx:id="emailColumn" text="Email" prefWidth="250" />
-            <TableColumn fx:id="cityColumn" text="City" prefWidth="150" />
+            <TableColumn fx:id="nameColumn" text="Name" prefWidth="200" />
+            <TableColumn fx:id="emailColumn" text="Email" prefWidth="220" />
+            <TableColumn fx:id="cityColumn" text="City" prefWidth="140" />
+            <TableColumn fx:id="phoneColumn" text="Phone" prefWidth="140" />
+            <TableColumn fx:id="birthYearColumn" text="Birth Year" prefWidth="100" />
+            <TableColumn fx:id="membershipColumn" text="Membership" prefWidth="140" />
         </columns>
     </TableView>
 </VBox>

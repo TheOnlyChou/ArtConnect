@@ -8,13 +8,41 @@
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search workshops..." HBox.hgrow="ALWAYS" />
+        <ComboBox fx:id="levelFilter" promptText="Filter by Level" />
+        <Button text="Search" onAction="#handleSearch" />
+        <Button text="Reset" onAction="#handleReset" />
+    </HBox>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextField fx:id="titleInput" promptText="Title" prefWidth="180" />
+        <DatePicker fx:id="dateInput" promptText="Date" />
+        <TextField fx:id="timeInput" promptText="Time HH:mm" prefWidth="100" />
+        <TextField fx:id="durationInput" promptText="Duration (min)" prefWidth="110" />
+        <TextField fx:id="maxParticipantsInput" promptText="Max Participants" prefWidth="120" />
+        <TextField fx:id="priceInput" promptText="Price" prefWidth="80" />
+        <TextField fx:id="locationInput" promptText="Location" prefWidth="140" />
+        <ComboBox fx:id="levelInput" promptText="Level" prefWidth="120" />
+        <ComboBox fx:id="instructorInput" promptText="Instructor" prefWidth="180" />
+    </HBox>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextArea fx:id="descriptionInput" promptText="Description" prefRowCount="2" prefWidth="360" />
+        <Button text="Add" onAction="#handleAddWorkshop" />
+        <Button text="Update" onAction="#handleUpdateWorkshop" />
+        <Button text="Delete" onAction="#handleDeleteWorkshop" />
+        <Button text="Clear" onAction="#handleClearForm" />
+    </HBox>
     <TableView fx:id="workshopTable" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="titleColumn" text="Title" prefWidth="200" />
             <TableColumn fx:id="instructorColumn" text="Instructor" prefWidth="150" />
             <TableColumn fx:id="dateColumn" text="Date" prefWidth="150" />
-            <TableColumn fx:id="priceColumn" text="Price" prefWidth="80" />
+            <TableColumn fx:id="locationColumn" text="Location" prefWidth="160" />
+            <TableColumn fx:id="durationColumn" text="Duration" prefWidth="90" />
             <TableColumn fx:id="levelColumn" text="Level" prefWidth="100" />
+            <TableColumn fx:id="maxParticipantsColumn" text="Max" prefWidth="80" />
+            <TableColumn fx:id="priceColumn" text="Price" prefWidth="80" />
+            <TableColumn fx:id="descriptionPreviewColumn" text="Description" prefWidth="220" />
         </columns>
     </TableView>
 </VBox>

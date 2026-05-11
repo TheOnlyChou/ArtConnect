@@ -8,12 +8,36 @@
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search exhibitions..." HBox.hgrow="ALWAYS" />
+        <ComboBox fx:id="galleryFilter" promptText="Filter by Gallery" />
+        <Button text="Search" onAction="#handleSearch" />
+        <Button text="Reset" onAction="#handleReset" />
+    </HBox>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextField fx:id="titleInput" promptText="Title" prefWidth="180" />
+        <DatePicker fx:id="startDateInput" promptText="Start" />
+        <DatePicker fx:id="endDateInput" promptText="End" />
+        <TextField fx:id="themeInput" promptText="Theme" prefWidth="140" />
+        <TextField fx:id="curatorInput" promptText="Curator" prefWidth="140" />
+        <ComboBox fx:id="galleryInput" promptText="Gallery" prefWidth="180" />
+    </HBox>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextArea fx:id="descriptionInput" promptText="Description" prefRowCount="2" prefWidth="360" />
+        <Button text="Add" onAction="#handleAddExhibition" />
+        <Button text="Update" onAction="#handleUpdateExhibition" />
+        <Button text="Delete" onAction="#handleDeleteExhibition" />
+        <Button text="Clear" onAction="#handleClearForm" />
+    </HBox>
     <TableView fx:id="exhibitionTable" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="titleColumn" text="Title" prefWidth="200" />
-            <TableColumn fx:id="galleryColumn" text="Gallery" prefWidth="150" />
-            <TableColumn fx:id="dateColumn" text="Start Date" prefWidth="120" />
+            <TableColumn fx:id="galleryColumn" text="Gallery" prefWidth="160" />
+            <TableColumn fx:id="startDateColumn" text="Start Date" prefWidth="120" />
+            <TableColumn fx:id="endDateColumn" text="End Date" prefWidth="120" />
             <TableColumn fx:id="themeColumn" text="Theme" prefWidth="180" />
+            <TableColumn fx:id="curatorColumn" text="Curator" prefWidth="150" />
+            <TableColumn fx:id="descriptionPreviewColumn" text="Description" prefWidth="220" />
         </columns>
     </TableView>
 </VBox>

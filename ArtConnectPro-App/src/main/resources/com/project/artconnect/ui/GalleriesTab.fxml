@@ -8,5 +8,33 @@
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
-    <ListView fx:id="galleryList" VBox.vgrow="ALWAYS" />
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search galleries..." HBox.hgrow="ALWAYS" />
+        <Button text="Search" onAction="#handleSearch" />
+        <Button text="Reset" onAction="#handleReset" />
+    </HBox>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextField fx:id="nameInput" promptText="Name" prefWidth="160" />
+        <TextField fx:id="addressInput" promptText="Address" prefWidth="220" />
+        <TextField fx:id="ownerInput" promptText="Owner" prefWidth="140" />
+        <TextField fx:id="hoursInput" promptText="Hours" prefWidth="120" />
+        <TextField fx:id="phoneInput" promptText="Phone" prefWidth="130" />
+        <TextField fx:id="ratingInput" promptText="Rating" prefWidth="80" />
+        <TextField fx:id="websiteInput" promptText="Website" prefWidth="160" />
+        <Button text="Add" onAction="#handleAddGallery" />
+        <Button text="Update" onAction="#handleUpdateGallery" />
+        <Button text="Delete" onAction="#handleDeleteGallery" />
+        <Button text="Clear" onAction="#handleClearForm" />
+    </HBox>
+    <TableView fx:id="galleryTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="nameColumn" text="Name" prefWidth="180" />
+            <TableColumn fx:id="addressColumn" text="Address" prefWidth="220" />
+            <TableColumn fx:id="ownerColumn" text="Owner" prefWidth="140" />
+            <TableColumn fx:id="hoursColumn" text="Hours" prefWidth="130" />
+            <TableColumn fx:id="phoneColumn" text="Phone" prefWidth="130" />
+            <TableColumn fx:id="ratingColumn" text="Rating" prefWidth="80" />
+            <TableColumn fx:id="websiteColumn" text="Website" prefWidth="170" />
+        </columns>
+    </TableView>
 </VBox>

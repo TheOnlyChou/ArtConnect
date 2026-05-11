@@ -49,6 +49,49 @@ public class InMemoryCommunityService implements CommunityService {
     }
 
     @Override
+    public Optional<CommunityMember> getMemberByEmail(String email) {
+        if (email == null) {
+            return Optional.empty();
+        }
+        return members.values().stream()
+                .filter(member -> email.equalsIgnoreCase(member.getEmail()))
+                .findFirst();
+    }
+
+    @Override
+    public void createMember(CommunityMember member) {
+        if (member == null || member.getName() == null) {
+            return;
+        }
+        members.put(member.getName(), member);
+    }
+
+    @Override
+    public void updateMember(CommunityMember member) {
+        if (member == null || member.getName() == null) {
+            return;
+        }
+        members.put(member.getName(), member);
+    }
+
+    @Override
+    public void deleteMember(String email) {
+        if (email == null) {
+            return;
+        }
+        String keyToRemove = null;
+        for (Map.Entry<String, CommunityMember> entry : members.entrySet()) {
+            if (email.equalsIgnoreCase(entry.getValue().getEmail())) {
+                keyToRemove = entry.getKey();
+                break;
+            }
+        }
+        if (keyToRemove != null) {
+            members.remove(keyToRemove);
+        }
+    }
+
+    @Override
     public List<Review> getReviewsByMember(CommunityMember member) {
         if (member == null)
             return Collections.emptyList();

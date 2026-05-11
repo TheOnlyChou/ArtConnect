@@ -8,59 +8,42 @@
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
-
-    <GridPane hgap="8.0" vgap="8.0">
-        <columnConstraints>
-            <ColumnConstraints percentWidth="15" />
-            <ColumnConstraints percentWidth="25" />
-            <ColumnConstraints percentWidth="15" />
-            <ColumnConstraints percentWidth="25" />
-            <ColumnConstraints percentWidth="20" />
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints minHeight="30" />
-            <RowConstraints minHeight="30" />
-            <RowConstraints minHeight="30" />
-        </rowConstraints>
-
-        <Label text="Title:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-        <TextField fx:id="titleInput" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-
-        <Label text="Artist:" GridPane.rowIndex="0" GridPane.columnIndex="2" />
-        <ComboBox fx:id="artistCombo" GridPane.rowIndex="0" GridPane.columnIndex="3" />
-
-        <Label text="Type:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-        <TextField fx:id="typeInput" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-
-        <Label text="Year:" GridPane.rowIndex="1" GridPane.columnIndex="2" />
-        <TextField fx:id="yearInput" GridPane.rowIndex="1" GridPane.columnIndex="3" />
-
-        <Label text="Price:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-        <TextField fx:id="priceInput" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-
-        <Label text="Status:" GridPane.rowIndex="2" GridPane.columnIndex="2" />
-        <ComboBox fx:id="statusCombo" GridPane.rowIndex="2" GridPane.columnIndex="3" />
-    </GridPane>
-
-    <HBox spacing="8.0">
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search artworks..." HBox.hgrow="ALWAYS" />
+        <ComboBox fx:id="statusFilter" promptText="Status" />
+        <ComboBox fx:id="artistFilter" promptText="Artist" />
+        <Button text="Search" onAction="#handleSearch" />
+        <Button text="Reset" onAction="#handleReset" />
+    </HBox>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextField fx:id="titleInput" promptText="Title" prefWidth="180" />
+        <TextField fx:id="creationYearInput" promptText="Year" prefWidth="80" />
+        <TextField fx:id="typeInput" promptText="Type" prefWidth="120" />
+        <TextField fx:id="mediumInput" promptText="Medium" prefWidth="120" />
+        <TextField fx:id="dimensionsInput" promptText="Dimensions" prefWidth="120" />
+        <TextField fx:id="priceInput" promptText="Price" prefWidth="90" />
+        <ComboBox fx:id="statusInput" promptText="Status" prefWidth="120" />
+        <ComboBox fx:id="artistInput" promptText="Artist" prefWidth="180" />
+        <TextField fx:id="tagsInput" promptText="Tags (comma-separated)" prefWidth="200" />
+    </HBox>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextArea fx:id="descriptionInput" promptText="Description" prefRowCount="2" prefWidth="360" />
         <Button text="Add" onAction="#handleAddArtwork" />
         <Button text="Update" onAction="#handleUpdateArtwork" />
         <Button text="Delete" onAction="#handleDeleteArtwork" />
         <Button text="Clear" onAction="#handleClearForm" />
-        <Region HBox.hgrow="ALWAYS" />
-        <TextField fx:id="searchField" promptText="Search (title, artist, type)..." />
-        <Button text="Search" onAction="#handleSearch" />
-        <Button text="Reset" onAction="#handleReset" />
     </HBox>
-
     <TableView fx:id="artworkTable" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="titleColumn" text="Title" prefWidth="200" />
+            <TableColumn fx:id="titleColumn" text="Title" prefWidth="180" />
             <TableColumn fx:id="artistColumn" text="Artist" prefWidth="150" />
-            <TableColumn fx:id="typeColumn" text="Type" prefWidth="100" />
+            <TableColumn fx:id="typeColumn" text="Type" prefWidth="110" />
             <TableColumn fx:id="yearColumn" text="Year" prefWidth="80" />
-            <TableColumn fx:id="priceColumn" text="Price" prefWidth="100" />
-            <TableColumn fx:id="statusColumn" text="Status" prefWidth="150" />
+            <TableColumn fx:id="dimensionsColumn" text="Dimensions" prefWidth="120" />
+            <TableColumn fx:id="priceColumn" text="Price" prefWidth="90" />
+            <TableColumn fx:id="statusColumn" text="Status" prefWidth="120" />
+            <TableColumn fx:id="tagsColumn" text="Tags" prefWidth="200" />
+            <TableColumn fx:id="descriptionPreviewColumn" text="Description" prefWidth="220" />
         </columns>
     </TableView>
 </VBox>

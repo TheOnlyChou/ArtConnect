@@ -1,5 +1,6 @@
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/model/Review.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/config/DatabaseConfig.java
+/home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/BookingService.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/persistence/JdbcGalleryDao.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/impl/InMemoryArtistService.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/model/Gallery.java
@@ -23,12 +24,16 @@
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/impl/JdbcCommunityService.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/model/Artist.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/dao/WorkshopDao.java
+/home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/ExhibitionService.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/GalleryService.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/CommunityService.java
+/home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/impl/JdbcExhibitionService.java
+/home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/ui/BookingController.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/model/ArtworkTag.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/model/Workshop.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/dao/ExhibitionDao.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/impl/InMemoryArtworkService.java
+/home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/dao/BookingDao.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/ArtworkService.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/impl/JdbcArtistService.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/impl/InMemoryGalleryService.java
@@ -36,6 +41,7 @@
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/dao/ArtworkDao.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/ui/CommunityController.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/model/Exhibition.java
+/home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/impl/JdbcBookingService.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/ui/WorkshopController.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/persistence/JdbcWorkshopDao.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/service/impl/JdbcArtworkService.java
@@ -46,4 +52,5 @@
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/persistence/JdbcArtistDao.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/model/Discipline.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/dao/GalleryDao.java
+/home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/persistence/JdbcBookingDao.java
 /home/theonlychou/VisualStudioCode/ArtConnect/ArtConnectPro-App/src/main/java/com/project/artconnect/ui/DiscoverController.java

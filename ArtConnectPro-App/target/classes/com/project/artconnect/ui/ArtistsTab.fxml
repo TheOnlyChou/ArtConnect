@@ -11,6 +11,7 @@
     <HBox spacing="10.0" alignment="CENTER_LEFT">
         <TextField fx:id="searchField" promptText="Search (name, city, email)..." HBox.hgrow="ALWAYS" />
         <ComboBox fx:id="disciplineFilter" promptText="Filter by Discipline" />
+        <TextField fx:id="cityFilter" promptText="City" prefWidth="140" />
         <Button text="Search" onAction="#handleSearch" />
         <Button text="Reset" onAction="#handleReset" />
     </HBox>
@@ -19,18 +20,30 @@
         <TextField fx:id="cityInput" promptText="City" prefWidth="140" />
         <TextField fx:id="emailInput" promptText="Email" prefWidth="220" />
         <TextField fx:id="yearInput" promptText="Birth Year" prefWidth="110" />
+        <TextField fx:id="phoneInput" promptText="Phone" prefWidth="140" />
+        <TextField fx:id="websiteInput" promptText="Website" prefWidth="180" />
+        <TextField fx:id="socialInput" promptText="Social" prefWidth="180" />
+        <CheckBox fx:id="activeInput" text="Active" selected="true" />
         <Button text="Add" onAction="#handleAddArtist" />
         <Button text="Update" onAction="#handleUpdateArtist" />
         <Button text="Delete" onAction="#handleDeleteArtist" />
         <Button text="Clear" onAction="#handleClearForm" />
     </HBox>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextArea fx:id="bioInput" promptText="Bio" prefRowCount="2" prefWidth="360" />
+        <TextField fx:id="disciplinesInput" promptText="Disciplines (comma-separated)" prefWidth="260" />
+    </HBox>
     <TableView fx:id="artistTable" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="nameColumn" text="Name" prefWidth="200" />
-            <TableColumn fx:id="cityColumn" text="City" prefWidth="150" />
-            <TableColumn fx:id="emailColumn" text="Email" prefWidth="200" />
-            <TableColumn fx:id="disciplinesColumn" text="Disciplines" prefWidth="180" />
-            <TableColumn fx:id="yearColumn" text="Birth Year" prefWidth="100" />
+            <TableColumn fx:id="nameColumn" text="Name" prefWidth="180" />
+            <TableColumn fx:id="cityColumn" text="City" prefWidth="120" />
+            <TableColumn fx:id="emailColumn" text="Email" prefWidth="180" />
+            <TableColumn fx:id="phoneColumn" text="Phone" prefWidth="120" />
+            <TableColumn fx:id="websiteColumn" text="Website" prefWidth="150" />
+            <TableColumn fx:id="disciplinesColumn" text="Disciplines" prefWidth="150" />
+            <TableColumn fx:id="activeColumn" text="Active" prefWidth="70" />
+            <TableColumn fx:id="yearColumn" text="Birth Year" prefWidth="90" />
+            <TableColumn fx:id="bioPreviewColumn" text="Bio" prefWidth="220" />
         </columns>
     </TableView>
 </VBox>

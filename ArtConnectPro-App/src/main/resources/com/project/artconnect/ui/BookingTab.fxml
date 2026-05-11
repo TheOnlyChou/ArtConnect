@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="10.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.project.artconnect.ui.BookingController">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search (member, workshop)..." HBox.hgrow="ALWAYS" />
+        <ComboBox fx:id="statusFilter" promptText="Filter by Status" />
+        <ComboBox fx:id="memberFilter" promptText="Filter by Member" />
+        <Button text="Search" onAction="#handleSearch" />
+        <Button text="Reset" onAction="#handleReset" />
+    </HBox>
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <ComboBox fx:id="workshopInput" promptText="Workshop" prefWidth="200" />
+        <ComboBox fx:id="memberInput" promptText="Member" prefWidth="200" />
+        <ComboBox fx:id="paymentStatusInput" promptText="Payment Status" prefWidth="150" />
+        <Button text="Create" onAction="#handleCreateBooking" />
+        <Button text="Update Status" onAction="#handleUpdateStatus" />
+        <Button text="Cancel" onAction="#handleCancelBooking" />
+        <Button text="Clear" onAction="#handleClearForm" />
+    </HBox>
+    <TableView fx:id="bookingTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="memberColumn" text="Member" prefWidth="200" />
+            <TableColumn fx:id="workshopColumn" text="Workshop" prefWidth="250" />
+            <TableColumn fx:id="dateColumn" text="Booking Date" prefWidth="180" />
+            <TableColumn fx:id="statusColumn" text="Payment Status" prefWidth="150" />
+        </columns>
+    </TableView>
+</VBox>

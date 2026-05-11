@@ -10,9 +10,35 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class ArtworkController {
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<Artwork.Status> statusFilter;
+    @FXML
+    private ComboBox<Artist> artistFilter;
+    @FXML
+    private TextField titleInput;
+    @FXML
+    private TextField creationYearInput;
+    @FXML
+    private TextField typeInput;
+    @FXML
+    private TextField mediumInput;
+    @FXML
+    private TextField dimensionsInput;
+    @FXML
+    private TextField priceInput;
+    @FXML
+    private ComboBox<Artwork.Status> statusInput;
+    @FXML
+    private ComboBox<Artist> artistInput;
+    @FXML
+    private TextField tagsInput;
+    @FXML
+    private TextArea descriptionInput;
     @FXML
     private TableView<Artwork> artworkTable;
     @FXML
@@ -26,25 +52,16 @@ public class ArtworkController {
     @FXML
     private TableColumn<Artwork, String> statusColumn;
     @FXML
+    private TableColumn<Artwork, String> dimensionsColumn;
+    @FXML
+    private TableColumn<Artwork, String> descriptionPreviewColumn;
+    @FXML
     private TableColumn<Artwork, String> artistColumn;
+    @FXML
+    private TableColumn<Artwork, String> tagsColumn;
 
     private final ArtworkService artworkService = ServiceProvider.getArtworkService();
     private final ArtistService artistService = ServiceProvider.getArtistService();
-
-    @FXML
-    private TextField titleInput;
-    @FXML
-    private ComboBox<Artist> artistCombo;
-    @FXML
-    private TextField typeInput;
-    @FXML
-    private TextField priceInput;
-    @FXML
-    private TextField yearInput;
-    @FXML
-    private ComboBox<Artwork.Status> statusCombo;
-    @FXML
-    private TextField searchField;
 
     @FXML
     public void initialize() {
@@ -52,20 +69,57 @@ public class ArtworkController {
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         yearColumn.setCellValueFactory(new PropertyValueFactory<>("creationYear"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+            cellData.getValue().getStatus() != null ? cellData.getValue().getStatus().toString() : ""));
+        dimensionsColumn.setCellValueFactory(new PropertyValueFactory<>("dimensions"));
+        descriptionPreviewColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+            preview(cellData.getValue() != null ? cellData.getValue().getDescription() : null, 70)));
+
+        tagsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
+            cellData.getValue().getTags() != null && !cellData.getValue().getTags().isEmpty()
+                ? cellData.getValue().getTags().stream().map(t -> t.getName()).collect(Collectors.joining(", "))
+                : ""));
 
         artistColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
                 cellData.getValue().getArtist() != null ? cellData.getValue().getArtist().getName() : "Unknown"));
 
-        artistCombo.setItems(FXCollections.observableArrayList(artistService.getAllArtists()));
-        statusCombo.setItems(FXCollections.observableArrayList(Arrays.asList(Artwork.Status.values())));
-        refreshTable();
+        artistFilter.setItems(FXCollections.observableArrayList(artistService.getAllArtists()));
+        statusFilter.setItems(FXCollections.observableArrayList(Artwork.Status.values()));
+        statusInput.setItems(FXCollections.observableArrayList(Artwork.Status.values()));
+        artistInput.setItems(FXCollections.observableArrayList(artistService.getAllArtists()));
 
         artworkTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, selected) -> {
             if (selected != null) {
                 populateForm(selected);
             }
         });
+        refreshTable();
+    }
+
+    @FXML
+    private void handleSearch() {
+        String query = searchField.getText() != null ? searchField.getText().trim().toLowerCase() : "";
+        Artwork.Status status = statusFilter.getValue();
+        Artist artist = artistFilter.getValue();
+        
+        var filtered = artworkService.getAllArtworks().stream()
+            .filter(a -> query.isEmpty() || 
+                   a.getTitle().toLowerCase().contains(query) || 
+                   (a.getType() != null && a.getType().toLowerCase().contains(query)) ||
+                   (a.getArtist() != null && a.getArtist().getName().toLowerCase().contains(query)))
+            .filter(a -> status == null || a.getStatus() == status)
+            .filter(a -> artist == null || (a.getArtist() != null && a.getArtist().equals(artist)))
+            .collect(Collectors.toList());
+        
+        artworkTable.setItems(FXCollections.observableArrayList(filtered));
+    }
+
+    @FXML
+    private void handleReset() {
+        searchField.clear();
+        statusFilter.setValue(null);
+        artistFilter.setValue(null);
+        refreshTable();
     }
 
     @FXML
@@ -79,7 +133,7 @@ public class ArtworkController {
             refreshTable();
             selectByTitle(artwork.getTitle());
         } catch (RuntimeException e) {
-            showError("Failed to add artwork.", e);
+            showError("Failed to create artwork: " + e.getMessage());
         }
     }
 
@@ -88,10 +142,11 @@ public class ArtworkController {
         Artwork selected = artworkTable.getSelectionModel().getSelectedItem();
         Artwork artwork = buildArtworkFromForm();
         if (selected == null || artwork == null) {
+            showInfo("Select an artwork to update.");
             return;
         }
         if (!selected.getTitle().equals(artwork.getTitle())) {
-            showInfo("Update requires the same artwork title as the selected row.");
+            showInfo("Update requires the same title as the selected row.");
             return;
         }
         try {
@@ -99,7 +154,7 @@ public class ArtworkController {
             refreshTable();
             selectByTitle(artwork.getTitle());
         } catch (RuntimeException e) {
-            showError("Failed to update artwork.", e);
+            showError("Failed to update artwork: " + e.getMessage());
         }
     }
 
@@ -116,41 +171,23 @@ public class ArtworkController {
             refreshTable();
             handleClearForm();
         } catch (RuntimeException e) {
-            showError("Failed to delete artwork.", e);
+            showError("Failed to delete artwork: " + e.getMessage());
         }
     }
 
     @FXML
     private void handleClearForm() {
         titleInput.clear();
+        creationYearInput.clear();
         typeInput.clear();
+        mediumInput.clear();
+        dimensionsInput.clear();
         priceInput.clear();
-        yearInput.clear();
-        artistCombo.setValue(null);
-        statusCombo.setValue(null);
+        statusInput.setValue(null);
+        artistInput.setValue(null);
+        tagsInput.clear();
+        descriptionInput.clear();
         artworkTable.getSelectionModel().clearSelection();
-    }
-
-    @FXML
-    private void handleSearch() {
-        String q = searchField.getText();
-        if (q == null || q.isBlank()) {
-            refreshTable();
-            return;
-        }
-        String query = q.trim().toLowerCase();
-        artworkTable.setItems(FXCollections.observableArrayList(artworkService.getAllArtworks().stream()
-                .filter(a -> (a.getTitle() != null && a.getTitle().toLowerCase().contains(query))
-                        || (a.getArtist() != null && a.getArtist().getName() != null 
-                            && a.getArtist().getName().toLowerCase().contains(query))
-                        || (a.getType() != null && a.getType().toLowerCase().contains(query)))
-                .toList()));
-    }
-
-    @FXML
-    private void handleReset() {
-        searchField.clear();
-        refreshTable();
     }
 
     private void refreshTable() {
@@ -164,25 +201,37 @@ public class ArtworkController {
             return null;
         }
 
-        Artwork artwork = new Artwork();
-        artwork.setTitle(title);
-        artwork.setType(typeInput.getText() != null ? typeInput.getText().trim() : null);
-        Artist selected = artistCombo.getValue();
-        if (selected == null) {
+        Artist artist = artistInput.getValue();
+        if (artist == null) {
             showInfo("Artist is required.");
             return null;
         }
-        artwork.setArtist(selected);
+
+        Artwork artwork = new Artwork();
+        artwork.setTitle(title);
+        artwork.setArtist(artist);
+        artwork.setType(typeInput.getText() != null ? typeInput.getText().trim() : null);
+        artwork.setMedium(mediumInput.getText() != null ? mediumInput.getText().trim() : null);
+        artwork.setDimensions(dimensionsInput.getText() != null ? dimensionsInput.getText().trim() : null);
+        artwork.setDescription(descriptionInput.getText() != null ? descriptionInput.getText().trim() : null);
+
+        if (statusInput.getValue() != null) {
+            artwork.setStatus(statusInput.getValue());
+        }
+
         String priceText = priceInput.getText() != null ? priceInput.getText().trim() : "";
         if (!priceText.isEmpty()) {
             try {
                 artwork.setPrice(Double.parseDouble(priceText));
             } catch (NumberFormatException e) {
-                showInfo("Price must be a number.");
+                showInfo("Price must be a valid number.");
                 return null;
             }
+        } else {
+            artwork.setPrice(0.0);
         }
-        String yearText = yearInput.getText() != null ? yearInput.getText().trim() : "";
+
+        String yearText = creationYearInput.getText() != null ? creationYearInput.getText().trim() : "";
         if (!yearText.isEmpty()) {
             try {
                 artwork.setCreationYear(Integer.parseInt(yearText));
@@ -192,32 +241,30 @@ public class ArtworkController {
             }
         }
 
-        Artwork.Status status = statusCombo.getValue();
-        if (status != null) {
-            artwork.setStatus(status);
-        } else {
-            artwork.setStatus(Artwork.Status.FOR_SALE);
-        }
-
         return artwork;
     }
 
     private void populateForm(Artwork artwork) {
         titleInput.setText(artwork.getTitle());
         typeInput.setText(artwork.getType());
-        priceInput.setText(String.valueOf(artwork.getPrice()));
-        yearInput.setText(artwork.getCreationYear() != null ? String.valueOf(artwork.getCreationYear()) : "");
-        statusCombo.setValue(artwork.getStatus() != null ? artwork.getStatus() : Artwork.Status.FOR_SALE);
-        if (artwork.getArtist() != null) {
-            for (Artist a : artistCombo.getItems()) {
-                if (a.getName() != null && a.getName().equalsIgnoreCase(artwork.getArtist().getName())) {
-                    artistCombo.setValue(a);
-                    break;
-                }
-            }
-        } else {
-            artistCombo.setValue(null);
+        mediumInput.setText(artwork.getMedium());
+        dimensionsInput.setText(artwork.getDimensions());
+        priceInput.setText(artwork.getPrice() > 0 ? String.valueOf(artwork.getPrice()) : "");
+        creationYearInput.setText(artwork.getCreationYear() != null ? String.valueOf(artwork.getCreationYear()) : "");
+        statusInput.setValue(artwork.getStatus());
+        artistInput.setValue(artwork.getArtist());
+        tagsInput.setText(artwork.getTags() != null && !artwork.getTags().isEmpty()
+            ? artwork.getTags().stream().map(t -> t.getName()).collect(Collectors.joining(", "))
+            : "");
+        descriptionInput.setText(artwork.getDescription());
+    }
+
+    private String preview(String text, int maxLength) {
+        if (text == null || text.isBlank()) {
+            return "";
         }
+        String trimmed = text.trim().replace('\n', ' ');
+        return trimmed.length() <= maxLength ? trimmed : trimmed.substring(0, maxLength - 1) + "...";
     }
 
     private void selectByTitle(String title) {
@@ -240,11 +287,11 @@ public class ArtworkController {
         alert.showAndWait();
     }
 
-    private void showError(String message, Exception exception) {
+    private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Artworks");
-        alert.setHeaderText(message);
-        alert.setContentText(exception.getMessage() != null ? exception.getMessage() : "An unexpected error occurred.");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
         alert.showAndWait();
     }
 }

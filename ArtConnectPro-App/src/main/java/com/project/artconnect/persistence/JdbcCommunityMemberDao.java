@@ -45,6 +45,24 @@ public class JdbcCommunityMemberDao implements CommunityMemberDao {
     }
 
     @Override
+    public Optional<CommunityMember> findByEmail(String email) {
+        String sql = BASE_SELECT + " WHERE cm.email_communityMember = ? ORDER BY cm.name_communityMember";
+        try (Connection connection = ConnectionManager.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, email);
+            try (ResultSet rs = statement.executeQuery()) {
+                List<CommunityMember> members = mapMembers(rs);
+                if (members.isEmpty()) {
+                    return Optional.empty();
+                }
+                return Optional.of(members.get(0));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to fetch member by email.", e);
+        }
+    }
+
+    @Override
     public List<CommunityMember> findAll() {
         String sql = BASE_SELECT + " ORDER BY cm.name_communityMember";
         try (Connection connection = ConnectionManager.getConnection();
@@ -56,6 +74,73 @@ public class JdbcCommunityMemberDao implements CommunityMemberDao {
         }
     }
 
+    @Override
+    public void save(CommunityMember member) {
+        String insertSql = """
+                INSERT INTO CommunityMember(
+                    id_communityMember, name_communityMember, email_communityMember,
+                    birthYear_communityMember, phone_communityMember,
+                    city_communityMember, membershipType_communityMember
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                """;
+        try (Connection connection = ConnectionManager.getConnection();
+                PreparedStatement statement = connection.prepareStatement(insertSql)) {
+            int nextId = nextMemberId(connection);
+            statement.setInt(1, nextId);
+            statement.setString(2, member.getName());
+            statement.setString(3, member.getEmail());
+            if (member.getBirthYear() == null) {
+                statement.setNull(4, java.sql.Types.INTEGER);
+            } else {
+                statement.setInt(4, member.getBirthYear());
+            }
+            statement.setString(5, member.getPhone());
+            statement.setString(6, member.getCity());
+            statement.setString(7, member.getMembershipType());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to save community member.", e);
+        }
+    }
+
+    @Override
+    public void update(CommunityMember member) {
+        String updateSql = """
+                UPDATE CommunityMember
+                SET name_communityMember = ?, birthYear_communityMember = ?, phone_communityMember = ?,
+                    city_communityMember = ?, membershipType_communityMember = ?
+                WHERE email_communityMember = ?
+                """;
+        try (Connection connection = ConnectionManager.getConnection();
+                PreparedStatement statement = connection.prepareStatement(updateSql)) {
+            statement.setString(1, member.getName());
+            if (member.getBirthYear() == null) {
+                statement.setNull(2, java.sql.Types.INTEGER);
+            } else {
+                statement.setInt(2, member.getBirthYear());
+            }
+            statement.setString(3, member.getPhone());
+            statement.setString(4, member.getCity());
+            statement.setString(5, member.getMembershipType());
+            statement.setString(6, member.getEmail());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update community member.", e);
+        }
+    }
+
+    @Override
+    public void delete(String email) {
+        String sql = "DELETE FROM CommunityMember WHERE email_communityMember = ?";
+        try (Connection connection = ConnectionManager.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, email);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete community member.", e);
+        }
+    }
+
     private List<CommunityMember> mapMembers(ResultSet rs) throws SQLException {
         Map<Integer, CommunityMember> byId = new LinkedHashMap<>();
         while (rs.next()) {
@@ -63,6 +148,7 @@ public class JdbcCommunityMemberDao implements CommunityMemberDao {
             CommunityMember member = byId.get(memberId);
             if (member == null) {
                 member = new CommunityMember();
+                member.setId((long) memberId);
                 member.setName(rs.getString("name_communityMember"));
                 member.setEmail(rs.getString("email_communityMember"));
                 member.setBirthYear((Integer) rs.getObject("birthYear_communityMember"));
@@ -78,5 +164,16 @@ public class JdbcCommunityMemberDao implements CommunityMemberDao {
             }
         }
         return new ArrayList<>(byId.values());
+    }
+
+    private int nextMemberId(Connection connection) throws SQLException {
+        try (PreparedStatement statement = connection
+                .prepareStatement("SELECT COALESCE(MAX(id_communityMember), 0) + 1 FROM CommunityMember");
+                ResultSet rs = statement.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 1;
+        }
     }
 }

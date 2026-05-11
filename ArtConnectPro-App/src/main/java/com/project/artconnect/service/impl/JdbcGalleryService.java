@@ -69,4 +69,19 @@ public class JdbcGalleryService implements GalleryService {
                         && gallery.getName().equalsIgnoreCase(exhibition.getGallery().getName()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void createGallery(Gallery gallery) {
+        galleryDao.save(gallery);
+    }
+
+    @Override
+    public void updateGallery(Gallery gallery) {
+        galleryDao.update(gallery);
+    }
+
+    @Override
+    public void deleteGallery(String name) {
+        galleryDao.delete(name);
+    }
 }

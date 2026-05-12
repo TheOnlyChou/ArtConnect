@@ -9,9 +9,8 @@
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
     <HBox spacing="10.0" alignment="CENTER_LEFT">
-        <TextField fx:id="searchField" promptText="Search (name, city, email)..." HBox.hgrow="ALWAYS" />
+        <TextField fx:id="searchField" promptText="Search (name, birth year, discipline, active)..." HBox.hgrow="ALWAYS" />
         <ComboBox fx:id="disciplineFilter" promptText="Filter by Discipline" />
-        <TextField fx:id="cityFilter" promptText="City" prefWidth="140" />
         <Button text="Search" onAction="#handleSearch" />
         <Button text="Reset" onAction="#handleReset" />
     </HBox>
@@ -31,7 +30,7 @@
     </HBox>
     <HBox spacing="10.0" alignment="CENTER_LEFT">
         <TextArea fx:id="bioInput" promptText="Bio" prefRowCount="2" prefWidth="360" />
-        <TextField fx:id="disciplinesInput" promptText="Disciplines (comma-separated)" prefWidth="260" />
+        <TextField fx:id="disciplinesInput" promptText="Disciplines (comma-separated, must exist)" prefWidth="260" />
     </HBox>
     <TableView fx:id="artistTable" VBox.vgrow="ALWAYS">
         <columns>

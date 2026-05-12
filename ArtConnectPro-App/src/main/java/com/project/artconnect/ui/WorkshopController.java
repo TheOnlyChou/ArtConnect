@@ -24,6 +24,7 @@ import java.time.format.DateTimeParseException;
 
 public class WorkshopController {
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @FXML
     private TextField searchField;
@@ -54,7 +55,7 @@ public class WorkshopController {
     @FXML
     private TableColumn<Workshop, String> titleColumn;
     @FXML
-    private TableColumn<Workshop, LocalDateTime> dateColumn;
+    private TableColumn<Workshop, String> dateColumn;
     @FXML
     private TableColumn<Workshop, String> instructorColumn;
     @FXML
@@ -76,7 +77,11 @@ public class WorkshopController {
     @FXML
     public void initialize() {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        dateColumn.setCellValueFactory(cellData -> {
+            LocalDateTime dt = cellData.getValue() != null ? cellData.getValue().getDate() : null;
+            String formatted = dt != null ? dt.format(DATE_TIME_FORMAT) : "";
+            return new SimpleStringProperty(formatted);
+        });
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         levelColumn.setCellValueFactory(new PropertyValueFactory<>("level"));
         maxParticipantsColumn.setCellValueFactory(new PropertyValueFactory<>("maxParticipants"));

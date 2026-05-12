@@ -20,8 +20,6 @@ public class ArtistController {
     @FXML
     private ComboBox<Discipline> disciplineFilter;
     @FXML
-    private TextField cityFilter;
-    @FXML
     private TextField nameInput;
     @FXML
     private TextField cityInput;
@@ -100,15 +98,13 @@ public class ArtistController {
         String query = searchField.getText();
         Discipline d = disciplineFilter.getValue();
         String dName = (d != null) ? d.getName() : null;
-        String city = cityFilter.getText() != null ? cityFilter.getText().trim() : null;
-        artistTable.setItems(FXCollections.observableArrayList(artistService.searchArtists(query, dName, city)));
+        artistTable.setItems(FXCollections.observableArrayList(artistService.searchArtists(query, dName, null)));
     }
 
     @FXML
     private void handleReset() {
         searchField.clear();
         disciplineFilter.setValue(null);
-        cityFilter.clear();
         refreshTable();
     }
 
@@ -269,7 +265,7 @@ public class ArtistController {
 
         if (!unknown.isEmpty()) {
             showInfo("Unknown disciplines: " + String.join(", ", unknown)
-                    + ". Use existing values from the discipline filter.");
+                    + ". Disciplines must be existing reference values. Use the discipline filter or ask an administrator to add new disciplines.");
             return null;
         }
         return selected;

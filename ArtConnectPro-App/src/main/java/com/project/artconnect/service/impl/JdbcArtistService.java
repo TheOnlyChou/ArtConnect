@@ -88,23 +88,41 @@ public class JdbcArtistService implements ArtistService {
 
     @Override
     public List<Artist> searchArtists(String query, String disciplineName, String city) {
-        List<Artist> source = (city == null || city.isBlank()) ? artistDao.findAll() : artistDao.findByCity(city);
+        List<Artist> source = artistDao.findAll();
         String normalizedQuery = query == null ? null : query.trim().toLowerCase();
         String normalizedDiscipline = disciplineName == null ? null : disciplineName.trim().toLowerCase();
-        String normalizedCity = city == null ? null : city.trim().toLowerCase();
 
         return source.stream()
-            .filter(a -> normalizedQuery == null || normalizedQuery.isEmpty()
-                || (a.getName() != null && a.getName().toLowerCase().contains(normalizedQuery))
-                || (a.getCity() != null && a.getCity().toLowerCase().contains(normalizedQuery))
-                || (a.getContactEmail() != null
-                    && a.getContactEmail().toLowerCase().contains(normalizedQuery)))
-                .filter(a -> normalizedCity == null || normalizedCity.isEmpty()
-                        || (a.getCity() != null && a.getCity().toLowerCase().equals(normalizedCity)))
-                .filter(a -> normalizedDiscipline == null || normalizedDiscipline.isEmpty()
-                        || a.getDisciplines().stream()
-                                .anyMatch(d -> d.getName() != null
-                                        && d.getName().toLowerCase().equals(normalizedDiscipline)))
-                .collect(Collectors.toList());
+            .filter(a -> {
+                if (normalizedQuery == null || normalizedQuery.isEmpty()) {
+                    return true;
+                }
+                // name
+                if (a.getName() != null && a.getName().toLowerCase().contains(normalizedQuery)) {
+                    return true;
+                }
+                // birth year
+                if (a.getBirthYear() != null && String.valueOf(a.getBirthYear()).contains(normalizedQuery)) {
+                    return true;
+                }
+                // disciplines
+                if (a.getDisciplines() != null && a.getDisciplines().stream()
+                        .anyMatch(d -> d.getName() != null && d.getName().toLowerCase().contains(normalizedQuery))) {
+                    return true;
+                }
+                // active/inactive keyword
+                if ("active".equals(normalizedQuery) && a.isActive()) {
+                    return true;
+                }
+                if ("inactive".equals(normalizedQuery) && !a.isActive()) {
+                    return true;
+                }
+                return false;
+            })
+            .filter(a -> normalizedDiscipline == null || normalizedDiscipline.isEmpty()
+                    || a.getDisciplines().stream()
+                            .anyMatch(d -> d.getName() != null
+                                    && d.getName().toLowerCase().equals(normalizedDiscipline)))
+            .collect(Collectors.toList());
     }
 }

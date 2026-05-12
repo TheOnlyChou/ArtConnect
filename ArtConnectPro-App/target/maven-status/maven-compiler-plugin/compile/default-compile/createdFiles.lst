@@ -4,6 +4,7 @@ com/project/artconnect/model/Artwork.class
 com/project/artconnect/ui/WorkshopController.class
 com/project/artconnect/service/ArtworkService.class
 com/project/artconnect/model/Gallery.class
+com/project/artconnect/service/impl/InMemoryExhibitionService.class
 com/project/artconnect/dao/ArtistDao.class
 com/project/artconnect/service/impl/InMemoryArtworkService.class
 com/project/artconnect/ui/DiscoverController.class
@@ -17,6 +18,7 @@ com/project/artconnect/model/CommunityMember.class
 com/project/artconnect/persistence/JdbcExhibitionDao.class
 com/project/artconnect/model/Discipline.class
 com/project/artconnect/dao/CommunityMemberDao.class
+com/project/artconnect/service/impl/InMemoryBookingService.class
 com/project/artconnect/model/Review.class
 com/project/artconnect/service/WorkshopService.class
 com/project/artconnect/ui/ArtistController.class
@@ -33,6 +35,7 @@ com/project/artconnect/service/impl/JdbcGalleryService.class
 com/project/artconnect/service/CommunityService.class
 com/project/artconnect/ui/BookingController.class
 com/project/artconnect/service/BookingService.class
+com/project/artconnect/ui/DiscoverController$4.class
 com/project/artconnect/ui/GalleryController.class
 com/project/artconnect/service/impl/JdbcExhibitionService.class
 com/project/artconnect/dao/GalleryDao.class

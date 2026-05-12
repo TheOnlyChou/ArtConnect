@@ -2,19 +2,49 @@ package com.project.artconnect.util;
 
 import com.project.artconnect.service.*;
 import com.project.artconnect.service.impl.*;
+import com.project.artconnect.util.ConnectionManager;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * Service Provider to manage singleton instances of services and handle their
  * initialization.
  */
 public class ServiceProvider {
-    private static final ArtistService artistService = new JdbcArtistService();
-    private static final ArtworkService artworkService = new JdbcArtworkService();
-    private static final GalleryService galleryService = new JdbcGalleryService();
-    private static final ExhibitionService exhibitionService = new JdbcExhibitionService();
-    private static final WorkshopService workshopService = new JdbcWorkshopService();
-    private static final CommunityService communityService = new JdbcCommunityService();
-    private static final BookingService bookingService = new JdbcBookingService();
+    private static final ArtistService artistService;
+    private static final ArtworkService artworkService;
+    private static final GalleryService galleryService;
+    private static final ExhibitionService exhibitionService;
+    private static final WorkshopService workshopService;
+    private static final CommunityService communityService;
+    private static final BookingService bookingService;
+    static {
+        boolean dbAvailable = true;
+        try (Connection ignored = ConnectionManager.getConnection()) {
+            // DB reachable
+        } catch (SQLException | IllegalStateException e) {
+            dbAvailable = false;
+        }
+
+        if (dbAvailable) {
+            artistService = new JdbcArtistService();
+            artworkService = new JdbcArtworkService();
+            galleryService = new JdbcGalleryService();
+            exhibitionService = new JdbcExhibitionService();
+            workshopService = new JdbcWorkshopService();
+            communityService = new JdbcCommunityService();
+            bookingService = new JdbcBookingService();
+        } else {
+            // Fallback to in-memory implementations to allow UI to run without DB
+            artistService = new InMemoryArtistService();
+            artworkService = new InMemoryArtworkService();
+            galleryService = new InMemoryGalleryService();
+            exhibitionService = new InMemoryExhibitionService();
+            workshopService = new InMemoryWorkshopService();
+            communityService = new InMemoryCommunityService();
+            bookingService = new InMemoryBookingService();
+        }
+    }
 
     public static ArtistService getArtistService() {
         return artistService;

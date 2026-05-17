@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/MySQL-Database-4479A1" alt="MySQL">
   <img src="https://img.shields.io/badge/Maven-Build-C71A36" alt="Maven">
   <img src="https://img.shields.io/badge/JDBC-Integrated-success" alt="JDBC Integrated">
-  <img src="https://img.shields.io/badge/Step%204-Complete-brightgreen" alt="Step 4 Complete">
+  <img src="https://img.shields.io/badge/Step%204-Complete-brightgreen" alt="Step 5 Complete">
 </p>
 
 ---

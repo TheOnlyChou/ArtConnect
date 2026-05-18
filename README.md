@@ -1,5 +1,5 @@
 # ArtConnect
-
+<a href="https://github.com/TheOnlyChou/ArtConnect">Accédez au dépôt GitHub</a>
 <p align="center">
   <strong>A JavaFX + MySQL application for managing a local art community</strong><br>
   Built as a student project with a clean JDBC-based architecture and persistent data management.
